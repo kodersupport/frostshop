@@ -1,0 +1,764 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
+    <title>iOS Configuration Creator</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background: #f2f4f8;
+            display: flex;
+            justify-content: center;
+            padding: 20px 12px 40px;
+            min-height: 100vh;
+            color: #1c1e24;
+        }
+
+        .app {
+            max-width: 560px;
+            width: 100%;
+        }
+
+        /* header */
+        .header {
+            text-align: center;
+            margin-bottom: 28px;
+            padding-top: 8px;
+        }
+        .header h1 {
+            font-size: 28px;
+            font-weight: 700;
+            letter-spacing: -0.5px;
+            background: linear-gradient(135deg, #1e2b4f, #2d3f6e);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .header p {
+            color: #5b677b;
+            font-size: 15px;
+            font-weight: 400;
+            margin-top: 4px;
+            letter-spacing: 0.2px;
+        }
+
+        /* card */
+        .card {
+            background: #ffffff;
+            border-radius: 28px;
+            padding: 24px 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.04), 0 4px 12px rgba(0, 0, 0, 0.02);
+            border: 1px solid rgba(0, 0, 0, 0.02);
+            transition: box-shadow 0.2s;
+        }
+
+        .card-title {
+            font-size: 17px;
+            font-weight: 600;
+            color: #1c1e24;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 18px;
+            letter-spacing: -0.2px;
+        }
+        .card-title span {
+            background: #eef2f7;
+            padding: 2px 12px;
+            border-radius: 30px;
+            font-size: 12px;
+            font-weight: 500;
+            color: #3a4a5e;
+        }
+
+        /* form */
+        .field {
+            margin-bottom: 18px;
+        }
+        .field:last-child {
+            margin-bottom: 0;
+        }
+
+        label {
+            display: block;
+            font-size: 14px;
+            font-weight: 500;
+            color: #2a3342;
+            margin-bottom: 5px;
+        }
+        label .hint {
+            font-weight: 400;
+            color: #6d7b8f;
+            font-size: 12px;
+            margin-left: 6px;
+        }
+
+        input, textarea {
+            width: 100%;
+            padding: 14px 16px;
+            font-size: 16px;
+            background: #f8faff;
+            border: 1.5px solid #e2e8f0;
+            border-radius: 18px;
+            transition: all 0.2s;
+            color: #0f141c;
+            font-family: inherit;
+        }
+        input:focus, textarea:focus {
+            outline: none;
+            border-color: #2d3f6e;
+            background: #ffffff;
+            box-shadow: 0 0 0 4px rgba(45, 63, 110, 0.08);
+        }
+        textarea {
+            min-height: 80px;
+            resize: vertical;
+            line-height: 1.5;
+        }
+
+        .row {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+        .row .field {
+            flex: 1 1 160px;
+        }
+
+        /* toggle (checkbox) */
+        .toggle-wrap {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin: 6px 0 12px;
+        }
+        .toggle-wrap input[type="checkbox"] {
+            width: 48px;
+            height: 28px;
+            appearance: none;
+            background: #cbd5e1;
+            border-radius: 40px;
+            position: relative;
+            cursor: pointer;
+            transition: background 0.25s;
+            flex-shrink: 0;
+            border: none;
+        }
+        .toggle-wrap input[type="checkbox"]::after {
+            content: "";
+            position: absolute;
+            top: 3px;
+            left: 3px;
+            width: 22px;
+            height: 22px;
+            background: white;
+            border-radius: 50%;
+            transition: transform 0.2s;
+            box-shadow: 0 1px 4px rgba(0,0,0,0.15);
+        }
+        .toggle-wrap input[type="checkbox"]:checked {
+            background: #2d3f6e;
+        }
+        .toggle-wrap input[type="checkbox"]:checked::after {
+            transform: translateX(20px);
+        }
+        .toggle-wrap .label {
+            font-weight: 500;
+            font-size: 16px;
+            color: #1c1e24;
+        }
+
+        /* upload icon */
+        .upload-area {
+            border: 2px dashed #dde3ed;
+            border-radius: 20px;
+            padding: 24px 16px;
+            text-align: center;
+            background: #fafcff;
+            transition: 0.2s;
+            cursor: pointer;
+            margin-top: 6px;
+        }
+        .upload-area:hover {
+            border-color: #2d3f6e;
+            background: #f4f8ff;
+        }
+        .upload-area .icon-big {
+            font-size: 38px;
+            line-height: 1;
+            margin-bottom: 4px;
+        }
+        .upload-area p {
+            color: #4b5b70;
+            font-size: 15px;
+            font-weight: 450;
+        }
+        .upload-area .sub {
+            font-size: 13px;
+            color: #7b8a9e;
+            margin-top: 2px;
+        }
+        .upload-area input[type="file"] {
+            display: none;
+        }
+
+        .preview-icon {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            margin-top: 14px;
+            flex-wrap: wrap;
+        }
+        .preview-icon img {
+            width: 64px;
+            height: 64px;
+            border-radius: 18px;
+            border: 2px solid #eef2f7;
+            object-fit: cover;
+            background: #f8faff;
+        }
+        .preview-icon .info {
+            font-size: 14px;
+            color: #2f3f55;
+            font-weight: 450;
+        }
+        .preview-icon .remove {
+            background: none;
+            border: none;
+            color: #b22234;
+            font-size: 22px;
+            cursor: pointer;
+            padding: 0 6px;
+            line-height: 1;
+            opacity: 0.6;
+            transition: 0.2s;
+        }
+        .preview-icon .remove:hover {
+            opacity: 1;
+        }
+
+        /* actions */
+        .actions {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin-top: 8px;
+        }
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            padding: 16px 24px;
+            border: none;
+            border-radius: 60px;
+            font-size: 17px;
+            font-weight: 600;
+            background: #eef2f7;
+            color: #1c1e24;
+            cursor: pointer;
+            transition: 0.2s;
+            width: 100%;
+            letter-spacing: -0.2px;
+        }
+        .btn-primary {
+            background: #1e2b4f;
+            color: white;
+            box-shadow: 0 8px 20px rgba(30, 43, 79, 0.18);
+        }
+        .btn-primary:active {
+            transform: scale(0.97);
+            background: #14213d;
+        }
+        .btn-primary:disabled {
+            opacity: 0.6;
+            transform: none;
+            box-shadow: none;
+            cursor: not-allowed;
+        }
+        .btn-success {
+            background: #1f8b4c;
+            color: white;
+            box-shadow: 0 8px 20px rgba(31, 139, 76, 0.18);
+        }
+        .btn-success:active {
+            transform: scale(0.97);
+            background: #15733e;
+        }
+
+        /* toast */
+        .toast {
+            padding: 14px 20px;
+            border-radius: 24px;
+            background: #1c2a44;
+            color: white;
+            font-weight: 500;
+            font-size: 15px;
+            margin: 12px 0 0;
+            display: none;
+            align-items: center;
+            gap: 10px;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.08);
+        }
+        .toast.show {
+            display: flex;
+        }
+        .toast.error {
+            background: #a1313b;
+        }
+        .toast.success {
+            background: #1a7a44;
+        }
+
+        .webclip-section {
+            margin-top: 16px;
+            padding-top: 12px;
+            border-top: 1px solid #edf2f7;
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        /* responsive */
+        @media (max-width: 480px) {
+            .card {
+                padding: 20px 16px;
+            }
+            .header h1 {
+                font-size: 24px;
+            }
+            .row .field {
+                flex: 1 1 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+<div class="app">
+
+    <!-- header -->
+    <div class="header">
+        <h1>📱 Profile Creator</h1>
+        <p>Tạo cấu hình iOS .mobileconfig</p>
+    </div>
+
+    <!-- main form -->
+    <div class="card">
+        <div class="card-title">📋 Thông tin cấu hình</div>
+
+        <div class="field">
+            <label>Tên cấu hình <span class="hint">(PayloadDisplayName)</span></label>
+            <input type="text" id="displayName" value="Cấu hình mượt" placeholder="Ví dụ: Cấu hình mượt">
+        </div>
+
+        <div class="field">
+            <label>Tổ chức / Nhà phát triển <span class="hint">(Organization)</span></label>
+            <input type="text" id="organization" value="Nguyen Tien Hoc" placeholder="Ví dụ: Nguyen Tien Hoc">
+        </div>
+
+        <div class="field">
+            <label>Mô tả <span class="hint">(Description)</span></label>
+            <textarea id="description" rows="3" placeholder="Mô tả ngắn về cấu hình này...">Cấu hình WebClip tối ưu cho iOS.</textarea>
+        </div>
+
+        <div class="field" style="margin-top: 4px;">
+            <label>Định danh <span class="hint">(PayloadIdentifier)</span></label>
+            <input type="text" id="payloadIdentifier" value="com.example.muot.profile" placeholder="com.example.profile">
+        </div>
+
+        <div class="field">
+            <label>Phiên bản <span class="hint">(PayloadVersion)</span></label>
+            <input type="number" id="payloadVersion" value="1" min="1" max="10">
+        </div>
+    </div>
+
+    <!-- WebClip -->
+    <div class="card">
+        <div class="card-title">🌐 WebClip <span>Tùy chọn</span></div>
+
+        <div class="toggle-wrap">
+            <input type="checkbox" id="enableWebClip" checked>
+            <span class="label">Bật WebClip</span>
+        </div>
+
+        <div id="webclipFields" class="webclip-section">
+            <div class="field">
+                <label>Tên WebClip <span class="hint">(Label)</span></label>
+                <input type="text" id="webclipLabel" value="UCHIHA V5" placeholder="Tên hiển thị trên màn hình">
+            </div>
+
+            <div class="field">
+                <label>URL <span class="hint">(WebClip)</span></label>
+                <input type="url" id="webclipUrl" value="https://nghoc0611-a11y.github.io/Uchihav5.9.85/" placeholder="https://example.com">
+            </div>
+
+            <div class="field">
+                <label>Icon WebClip</label>
+                <div class="upload-area" id="uploadArea">
+                    <div class="icon-big">🖼️</div>
+                    <p>Chọn ảnh (PNG / JPG)</p>
+                    <div class="sub">Kéo thả hoặc nhấn để tải lên</div>
+                    <input type="file" id="iconFile" accept="image/png,image/jpeg,image/webp">
+                </div>
+
+                <div id="iconPreview" class="preview-icon hidden">
+                    <img id="iconPreviewImg" src="#" alt="icon">
+                    <span class="info" id="iconInfo">icon.png</span>
+                    <button class="remove" id="removeIconBtn" type="button">✕</button>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="field">
+                    <label>Cho phép gỡ <span class="hint">(IsRemovable)</span></label>
+                    <select id="isRemovable" style="width:100%; padding:14px 16px; border-radius:18px; border:1.5px solid #e2e8f0; background:#f8faff; font-size:16px;">
+                        <option value="true">✅ Có</option>
+                        <option value="false">❌ Không</option>
+                    </select>
+                </div>
+                <div class="field">
+                    <label>FullScreen</label>
+                    <select id="fullScreen" style="width:100%; padding:14px 16px; border-radius:18px; border:1.5px solid #e2e8f0; background:#f8faff; font-size:16px;">
+                        <option value="true">✅ Có</option>
+                        <option value="false">❌ Không</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- actions -->
+    <div class="card" style="padding-bottom: 18px;">
+        <div class="actions">
+            <button class="btn btn-primary" id="generateBtn">⚡ Tạo Mobileconfig</button>
+            <button class="btn btn-success hidden" id="downloadBtn">📲 Tải xuống</button>
+        </div>
+        <div id="toast" class="toast">✅ Thành công</div>
+    </div>
+
+    <div style="text-align:center; font-size:13px; color:#8b9bb0; margin-top: 10px; letter-spacing:0.2px;">
+        Tất cả dữ liệu được xử lý trong trình duyệt · không gửi lên máy chủ
+    </div>
+</div>
+
+<script>
+    (function() {
+        "use strict";
+
+        // DOM refs
+        const displayName = document.getElementById('displayName');
+        const organization = document.getElementById('organization');
+        const description = document.getElementById('description');
+        const payloadIdentifier = document.getElementById('payloadIdentifier');
+        const payloadVersion = document.getElementById('payloadVersion');
+
+        const enableWebClip = document.getElementById('enableWebClip');
+        const webclipFields = document.getElementById('webclipFields');
+        const webclipLabel = document.getElementById('webclipLabel');
+        const webclipUrl = document.getElementById('webclipUrl');
+        const isRemovable = document.getElementById('isRemovable');
+        const fullScreen = document.getElementById('fullScreen');
+
+        const iconFile = document.getElementById('iconFile');
+        const uploadArea = document.getElementById('uploadArea');
+        const iconPreview = document.getElementById('iconPreview');
+        const iconPreviewImg = document.getElementById('iconPreviewImg');
+        const iconInfo = document.getElementById('iconInfo');
+        const removeIconBtn = document.getElementById('removeIconBtn');
+
+        const generateBtn = document.getElementById('generateBtn');
+        const downloadBtn = document.getElementById('downloadBtn');
+        const toast = document.getElementById('toast');
+
+        // state
+        let base64Icon = null;          // chỉ lưu phần data thuần (không có header)
+        let iconFilename = '';
+        let lastGeneratedBlobUrl = null;
+        let lastGeneratedFilename = '';
+
+        // toggle webclip fields
+        enableWebClip.addEventListener('change', function() {
+            if (this.checked) {
+                webclipFields.classList.remove('hidden');
+            } else {
+                webclipFields.classList.add('hidden');
+            }
+        });
+
+        // --- Icon upload ---
+        function handleIconFile(file) {
+            if (!file) return;
+            const valid = ['image/png', 'image/jpeg', 'image/webp'];
+            if (!valid.includes(file.type) && !file.name.match(/\.(png|jpe?g|webp)$/i)) {
+                showToast('Chỉ hỗ trợ PNG, JPG, WEBP', 'error');
+                return;
+            }
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const dataUrl = e.target.result;
+                // lấy phần base64 thuần (bỏ header)
+                const base64Raw = dataUrl.split(',')[1];
+                if (!base64Raw) {
+                    showToast('Không thể đọc ảnh', 'error');
+                    return;
+                }
+                base64Icon = base64Raw;
+                iconFilename = file.name;
+
+                // preview
+                iconPreviewImg.src = dataUrl;
+                iconInfo.textContent = file.name + ' (' + (file.size / 1024).toFixed(0) + ' KB)';
+                iconPreview.classList.remove('hidden');
+                showToast('Đã tải icon: ' + file.name, 'success');
+            };
+            reader.onerror = function() {
+                showToast('Lỗi đọc file', 'error');
+            };
+            reader.readAsDataURL(file);
+        }
+
+        uploadArea.addEventListener('click', function(e) {
+            if (e.target.tagName !== 'INPUT') iconFile.click();
+        });
+
+        iconFile.addEventListener('change', function(e) {
+            if (this.files && this.files.length > 0) {
+                handleIconFile(this.files[0]);
+            }
+            this.value = ''; // reset
+        });
+
+        // drag & drop
+        uploadArea.addEventListener('dragover', function(e) {
+            e.preventDefault();
+            this.style.borderColor = '#2d3f6e';
+        });
+        uploadArea.addEventListener('dragleave', function(e) {
+            e.preventDefault();
+            this.style.borderColor = '#dde3ed';
+        });
+        uploadArea.addEventListener('drop', function(e) {
+            e.preventDefault();
+            this.style.borderColor = '#dde3ed';
+            const files = e.dataTransfer.files;
+            if (files && files.length > 0) {
+                handleIconFile(files[0]);
+            }
+        });
+
+        // xoá icon
+        removeIconBtn.addEventListener('click', function(e) {
+            e.stopPropagation();
+            base64Icon = null;
+            iconFilename = '';
+            iconPreview.classList.add('hidden');
+            iconPreviewImg.src = '#';
+            iconInfo.textContent = '';
+            showToast('Đã xoá icon', 'success');
+        });
+
+        // --- UUID generator ---
+        function generateUUID() {
+            return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+                const r = Math.random() * 16 | 0;
+                const v = c === 'x' ? r : (r & 0x3 | 0x8);
+                return v.toString(16).toUpperCase();
+            });
+        }
+
+        // --- Toast ---
+        function showToast(msg, type) {
+            toast.textContent = msg;
+            toast.className = 'toast show';
+            if (type === 'error') {
+                toast.classList.add('error');
+            } else if (type === 'success') {
+                toast.classList.add('success');
+            } else {
+                toast.classList.remove('error', 'success');
+            }
+            // tự động ẩn sau 4.5s
+            clearTimeout(toast._timer);
+            toast._timer = setTimeout(() => {
+                toast.classList.remove('show');
+            }, 4500);
+        }
+
+        // --- generate ---
+        function generateConfig() {
+            // validate
+            const name = displayName.value.trim() || 'Cấu hình';
+            const org = organization.value.trim() || 'Tổ chức';
+            const desc = description.value.trim() || 'Cấu hình iOS';
+            const pId = payloadIdentifier.value.trim() || 'com.example.profile';
+            const pVer = parseInt(payloadVersion.value, 10) || 1;
+
+            // WebClip
+            const webEnabled = enableWebClip.checked;
+            let wcLabel = webclipLabel.value.trim() || 'WebClip';
+            let wcUrl = webclipUrl.value.trim() || 'https://example.com';
+            let removable = isRemovable.value === 'true';
+            let full = fullScreen.value === 'true';
+
+            // nếu webclip bật nhưng chưa có icon => vẫn cho phép, nhưng không nhúng icon
+            // nếu có icon thì dùng base64Icon
+            let iconData = base64Icon || '';
+
+            // tạo UUIDs
+            const payloadUUID = generateUUID();
+            const wcUUID = generateUUID();
+
+            // build xml
+            let xml = `<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+    <key>PayloadType</key>
+    <string>Configuration</string>
+    <key>PayloadVersion</key>
+    <integer>${pVer}</integer>
+    <key>PayloadIdentifier</key>
+    <string>${pId}</string>
+    <key>PayloadUUID</key>
+    <string>${payloadUUID}</string>
+    <key>PayloadDisplayName</key>
+    <string>${name}</string>
+    <key>PayloadOrganization</key>
+    <string>${org}</string>
+    <key>PayloadDescription</key>
+    <string>${desc}</string>
+    <key>PayloadRemovalDisallowed</key>
+    <false/>
+    <key>PayloadContent</key>
+    <array>`;
+
+            if (webEnabled) {
+                xml += `
+        <dict>
+            <key>PayloadType</key>
+            <string>com.apple.webClip.managed</string>
+            <key>PayloadVersion</key>
+            <integer>${pVer}</integer>
+            <key>PayloadIdentifier</key>
+            <string>${pId}.webclip</string>
+            <key>PayloadUUID</key>
+            <string>${wcUUID}</string>
+            <key>PayloadDisplayName</key>
+            <string>${wcLabel}</string>
+            <key>Label</key>
+            <string>${wcLabel}</string>
+            <key>URL</key>
+            <string>${wcUrl}</string>
+            <key>IsRemovable</key>
+            <${removable}/>
+            <key>FullScreen</key>
+            <${full}/>
+            <key>Precomposed</key>
+            <true/>`;
+
+                if (iconData && iconData.length > 0) {
+                    xml += `
+            <key>Icon</key>
+            <data>
+${iconData}
+            </data>`;
+                }
+
+                xml += `
+        </dict>`;
+            }
+
+            xml += `
+    </array>
+</dict>
+</plist>`;
+
+            // tạo blob
+            try {
+                const blob = new Blob([xml], { type: 'application/x-apple-aspen-config' });
+                const url = URL.createObjectURL(blob);
+                // giải phóng blob cũ
+                if (lastGeneratedBlobUrl) {
+                    URL.revokeObjectURL(lastGeneratedBlobUrl);
+                }
+                lastGeneratedBlobUrl = url;
+                // tên file: lấy từ tên cấu hình, thay khoảng trắng bằng _
+                const safeName = name.replace(/[^a-zA-Z0-9_\-]/g, '_').substring(0, 50) || 'config';
+                lastGeneratedFilename = safeName + '.mobileconfig';
+
+                // hiển thị nút tải
+                downloadBtn.classList.remove('hidden');
+                downloadBtn.textContent = `📲 Tải ${lastGeneratedFilename}`;
+                // gắn sự kiện tải
+                downloadBtn.onclick = function() {
+                    if (lastGeneratedBlobUrl) {
+                        const a = document.createElement('a');
+                        a.href = lastGeneratedBlobUrl;
+                        a.download = lastGeneratedFilename;
+                        document.body.appendChild(a);
+                        a.click();
+                        document.body.removeChild(a);
+                        showToast('✅ Đã tải ' + lastGeneratedFilename, 'success');
+                    } else {
+                        showToast('Chưa có file để tải', 'error');
+                    }
+                };
+
+                showToast('✅ Tạo thành công! Nhấn "Tải xuống" để lấy file.', 'success');
+            } catch (err) {
+                showToast('Lỗi tạo file: ' + err.message, 'error');
+            }
+        }
+
+        // --- Sự kiện generate ---
+        generateBtn.addEventListener('click', function() {
+            // kiểm tra nếu webclip bật nhưng thiếu url
+            if (enableWebClip.checked) {
+                const url = webclipUrl.value.trim();
+                if (!url) {
+                    showToast('Vui lòng nhập URL WebClip', 'error');
+                    webclipUrl.focus();
+                    return;
+                }
+                // kiểm tra url sơ bộ
+                try {
+                    new URL(url);
+                } catch (_) {
+                    showToast('URL WebClip không hợp lệ', 'error');
+                    webclipUrl.focus();
+                    return;
+                }
+            }
+
+            // tên không được để trống
+            if (!displayName.value.trim()) {
+                showToast('Vui lòng nhập Tên cấu hình', 'error');
+                displayName.focus();
+                return;
+            }
+
+            generateConfig();
+        });
+
+        // --- khởi tạo: nếu webclip tắt thì ẩn fields ---
+        if (!enableWebClip.checked) {
+            webclipFields.classList.add('hidden');
+        }
+
+        // thêm placeholder cho UUID (không bắt buộc)
+        // tự động thêm UUID vào description? không cần, nhưng có thể hint
+        console.log('iOS Configuration Creator ready.');
+    })();
+</script>
+</body>
+</html>
